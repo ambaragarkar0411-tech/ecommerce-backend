@@ -1,0 +1,19 @@
+package com.ambar.ecommerce_backend.repository;
+
+import com.ambar.ecommerce_backend.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    Page<Product> findByNameContainingIgnoreCase(String keyword, Pageable pageable);
+    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :min AND :max AND p.stock >= :stock")
+    Page<Product> filterProducts(
+            @Param("min") double min,
+            @Param("max") double max,
+            @Param("stock") int stock,
+            Pageable pageable
+    );
+}
