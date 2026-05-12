@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:5179")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -66,8 +66,9 @@ public class ProductController {
     }
     @GetMapping
     public Page<ProductDTO> getAll(@RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "5") int size,
-                                   @RequestParam(defaultValue = "id") String sortBy){
+                                   @RequestParam(defaultValue = "8") int size,
+                                   @RequestParam(defaultValue = "id") String sortBy)
+    {
         return service.getProducts(page,size,sortBy);
     }
 
@@ -75,7 +76,7 @@ public class ProductController {
     public Page<ProductDTO> search(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "8") int size,
             @RequestParam(defaultValue = "id") String sortBy) {
 
         return service.searchProducts(keyword, page, size, sortBy);
@@ -87,7 +88,7 @@ public class ProductController {
             @RequestParam double maxPrice,
             @RequestParam(defaultValue = "0") int stock,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "8") int size,
             @RequestParam(defaultValue = "price") String sortBy) {
 
         return service.filterProducts(minPrice, maxPrice, stock, page, size, sortBy);

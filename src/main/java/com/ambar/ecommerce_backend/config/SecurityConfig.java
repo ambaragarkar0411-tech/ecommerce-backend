@@ -14,10 +14,30 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.List;
+
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5179"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
     //password encoding in security config
     @Bean
@@ -41,8 +61,10 @@ public class SecurityConfig {
 //        Adds your JWT filter before Spring security
 
         http
+                .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
                                 //for swagger
                                 .requestMatchers(
                                         "/auth/**",
@@ -64,9 +86,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/products/**")
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/products/**")
-                        .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE,"/api/products/**")
-                        .hasRole("ADMIN")
+                                .hasRole("ADMIN")
+                                //.requestMatchers(HttpMethod.DELETE,"/api/products/**").permitAll()
+                       .requestMatchers(HttpMethod.DELETE,"/api/products/**")
+                       .hasRole("ADMIN")
+                                .requestMatchers("/cart/**").authenticated()
+                                .requestMatchers("/wishlist/**").permitAll()
                         .anyRequest().authenticated()            // ✅ same as before
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -82,6 +107,7 @@ public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
 
 
 }

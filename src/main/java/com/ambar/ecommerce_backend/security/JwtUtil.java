@@ -1,5 +1,6 @@
 package com.ambar.ecommerce_backend.security;
 
+import com.ambar.ecommerce_backend.model.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
@@ -18,11 +19,12 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .claim("role", user.getRole())
                 .signWith(getSigningKey())
                 .compact();
     }

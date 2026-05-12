@@ -59,6 +59,7 @@ public class ProductService {
         dto.setDescription(product.getDescription());
         dto.setPrice(product.getPrice());
         dto.setStock(product.getStock());
+        dto.setId(product.getId()); // ✅ VERY IMPORTANT
         return dto;
     }
 
@@ -117,25 +118,73 @@ public class ProductService {
 //            | Page        | Paginated result         |
 //            | map()       | Convert entity → DTO     |
 
-    public Page<ProductDTO> getProducts(int page, int size, String sortBy){
-        Pageable pageable= PageRequest.of(page,size, Sort.by(sortBy));
-        Page<Product> productPage=repo.findAll(pageable);
+    private Sort getSort(String sortBy) {
+        if (sortBy.contains(",")) {
+            String[] parts = sortBy.split(",");
+
+            String field = parts[0];
+            String direction = parts[1];
+
+            return direction.equalsIgnoreCase("desc")
+                    ? Sort.by(field).descending()
+                    : Sort.by(field).ascending();
+        }
+
+        return Sort.by(sortBy).ascending(); // default
+    }
+
+//    public Page<ProductDTO> getProducts(int page, int size, String sortBy){
+//        Pageable pageable= PageRequest.of(page,size, Sort.by(sortBy));
+//        Page<Product> productPage=repo.findAll(pageable);
+//        return productPage.map(this::convertToDTO);
+//    }
+
+    public Page<ProductDTO> getProducts(int page, int size, String sortBy) {
+
+        Sort sort = getSort(sortBy);
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productPage = repo.findAll(pageable);
+
         return productPage.map(this::convertToDTO);
     }
 
 //    Page<ProductDTO> means we are returning paginated data, not a full list — it includes content + metadata like total pages, total elements, etc.
 //    We use ProductDTO (instead of Product) to expose only required data to client and hide internal entity details.
 //    So together, it means: “return paginated, safe (DTO-based) response to the client.”
-    public Page<ProductDTO> searchProducts(String keyword,int page,int size,String sortBy){
-        Pageable pageable= PageRequest.of(page,size, Sort.by(sortBy));
-        Page<Product> productPage=repo.findByNameContainingIgnoreCase(keyword,pageable);
+
+//    public Page<ProductDTO> searchProducts(String keyword,int page,int size,String sortBy){
+//        Pageable pageable= PageRequest.of(page,size, Sort.by(sortBy));
+//        Page<Product> productPage=repo.findByNameContainingIgnoreCase(keyword,pageable);
+//        return productPage.map(this::convertToDTO);
+//    }
+
+    public Page<ProductDTO> searchProducts(String keyword, int page, int size, String sortBy) {
+
+        Sort sort = getSort(sortBy);
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productPage = repo.findByNameContainingIgnoreCase(keyword, pageable);
+
         return productPage.map(this::convertToDTO);
     }
 
-    public Page<ProductDTO> filterProducts(double minPrice,double maxPrice,int stock,int page,int size,String sortBy){
-        Pageable pageable=PageRequest.of(page,size,Sort.by(sortBy));
-        Page<Product> productPage=repo.findByPriceBetweenAndStockGreaterThan(minPrice,maxPrice,stock,pageable);
+//    public Page<ProductDTO> filterProducts(double minPrice,double maxPrice,int stock,int page,int size,String sortBy){
+//        Pageable pageable=PageRequest.of(page,size,Sort.by(sortBy));
+//        Page<Product> productPage=repo.filterProducts(minPrice,maxPrice,stock,pageable);
+//        return productPage.map(this::convertToDTO);
+//    }
+
+    public Page<ProductDTO> filterProducts(double minPrice, double maxPrice, int stock, int page, int size, String sortBy) {
+
+        Sort sort = getSort(sortBy);
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productPage = repo.filterProducts(minPrice, maxPrice, stock, pageable);
+
         return productPage.map(this::convertToDTO);
     }
-
 }

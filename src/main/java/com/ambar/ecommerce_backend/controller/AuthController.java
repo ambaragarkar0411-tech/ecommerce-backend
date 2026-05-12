@@ -7,15 +7,13 @@ import com.ambar.ecommerce_backend.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5179")
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -85,6 +83,9 @@ public class AuthController {
         } catch (Exception e) {
             throw new RuntimeException("Invalid username or password");
         }
-        return jwtUtil.generateToken(request.getUsername());
+        //return jwtUtil.generateToken(request.getUsername());
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return jwtUtil.generateToken(user);
     }
 }
