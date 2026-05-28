@@ -14,6 +14,10 @@ public class ProductDTO {
     private double price;
     @Min(value=0,message="Stock cannot be negative")
     private int stock;
+    @NotBlank(message = "Category  is required")
+    private String category;
+    private String imageUrl;
+
 
     // getters & setters
 }

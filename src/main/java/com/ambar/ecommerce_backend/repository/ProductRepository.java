@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findByNameContainingIgnoreCase(String keyword, Pageable pageable);
     @Query("SELECT p FROM Product p WHERE p.price BETWEEN :min AND :max AND p.stock >= :stock")
@@ -16,4 +18,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("stock") int stock,
             Pageable pageable
     );
+    List<Product> findByCategory(String category);
 }

@@ -32,3 +32,20 @@ xxxxx	Header
 yyyyy	Payload (DATA)
 zzzzz	Signature
 
+React Frontend
+    ↓
+POST /placeOrder
+    ↓
+Spring Boot Controller
+    ↓
+Order Service
+    ↓
+Save order in MySQL
+    ↓
+Generate PDF invoice
+    ↓
+Generate Email Content
+    ↓
+Send Email via Gmail SMTP
+    ↓
+Customer receives mail

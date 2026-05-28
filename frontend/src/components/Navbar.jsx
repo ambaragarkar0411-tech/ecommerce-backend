@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function Navbar() {
+function Navbar({searchKeyword,
+    setSearchKeyword}) {
 
     const navigate = useNavigate();
 
-    const [search, setSearch] = useState("");
+   // const [search, setSearch] = useState("");
+   
 
     // =========================
     // LOGOUT
@@ -22,31 +24,31 @@ function Navbar() {
     // SEARCH
     // =========================
 
-    const handleSearch = () => {
+    // const handleSearch = () => {
 
-        if (!search.trim()) {
+    //     if (!search.trim()) {
 
-            navigate("/products");
+    //         navigate("/products");
 
-            return;
-        }
+    //         return;
+    //     }
 
-        navigate(
-            `/products?search=${encodeURIComponent(search)}`
-        );
-    };
+    //     navigate(
+    //         `/products?search=${encodeURIComponent(search)}`
+    //     );
+    // };
 
     // =========================
     // ENTER KEY SEARCH
     // =========================
 
-    const handleKeyDown = (e) => {
+    // const handleKeyDown = (e) => {
 
-        if (e.key === "Enter") {
+    //     if (e.key === "Enter") {
 
-            handleSearch();
-        }
-    };
+    //         handleSearch();
+    //     }
+    // };
 
     return (
 
@@ -87,7 +89,7 @@ function Navbar() {
                 }}
             >
 
-                <input
+                {/* <input
                     type="text"
                     placeholder="Search products..."
                     value={search}
@@ -101,9 +103,15 @@ function Navbar() {
                         borderRadius: "5px",
                         border: "none"
                     }}
-                />
+                /> */}
+                <input
+    type="text"
+    placeholder="Search Products"
+    value={searchKeyword}
+    onChange={(e) => setSearchKeyword(e.target.value)}
+/>
 
-                <button
+                {/* <button
                     onClick={handleSearch}
                     style={{
                         padding: "10px 15px",
@@ -111,7 +119,7 @@ function Navbar() {
                     }}
                 >
                     Search
-                </button>
+                </button> */}
 
             </div>
 

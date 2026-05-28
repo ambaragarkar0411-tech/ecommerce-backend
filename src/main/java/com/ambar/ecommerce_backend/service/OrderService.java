@@ -41,7 +41,9 @@ public class OrderService {
                         + "Total Amount: ₹"
                         + savedOrder.getTotalPrice()
                         + "\n\n"
-                        + "Thank you for shopping with us.";
+                        + "Thank you for shopping with us."
+                        +"\n"
+                        +"Stay Tuned for our upcoming Monthly sale";
 
         // Generate PDF
         ByteArrayInputStream pdfStream =

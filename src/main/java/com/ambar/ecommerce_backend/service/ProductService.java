@@ -12,6 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Service
@@ -50,6 +58,8 @@ public class ProductService {
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
         product.setStock(dto.getStock());
+        product.setCategory(dto.getCategory());
+        product.setImageUrl(dto.getImageUrl());
         return product;
     }
 //convert entity to dto
@@ -60,6 +70,8 @@ public class ProductService {
         dto.setPrice(product.getPrice());
         dto.setStock(product.getStock());
         dto.setId(product.getId()); // ✅ VERY IMPORTANT
+        dto.setCategory(product.getCategory());
+        dto.setImageUrl(product.getImageUrl());
         return dto;
     }
 
@@ -92,17 +104,39 @@ public class ProductService {
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
         product.setStock(dto.getStock());
+        product.setCategory(dto.getCategory());
 
         Product updated = repo.save(product);
 
         return convertToDTO(updated);
     }
 
-    public void deleteProduct(Long id) {
+//    public void deleteProduct(Long id) {
+//
+//        Product product = repo.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+//
+//        repo.delete(product);
+//    }
+
+    public void deleteProduct(Long id) throws IOException {
 
         Product product = repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Product not found"));
 
+        // delete image file
+        if (product.getImageUrl() != null) {
+
+            Path imagePath = Paths.get(
+                    "uploads/",
+                    product.getImageUrl()
+            );
+
+            Files.deleteIfExists(imagePath);
+        }
+
+        // delete product from database
         repo.delete(product);
     }
 
@@ -186,5 +220,60 @@ public class ProductService {
         Page<Product> productPage = repo.filterProducts(minPrice, maxPrice, stock, pageable);
 
         return productPage.map(this::convertToDTO);
+    }
+//    public List<Product> getProductsByCategory(String category){
+//        return repo.findByCategory(category);
+
+
+    public List<ProductDTO> getProductsByCategory(String category){
+        return repo.findByCategory(category)
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+    public Product updateProduct(
+
+            Long id,
+            String name,
+            double price,
+            int stock,
+            String category,
+            MultipartFile image
+
+    ) throws IOException {
+
+        Product product = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        product.setName(name);
+        product.setPrice(price);
+        product.setStock(stock);
+        product.setCategory(category);
+
+        // image update optional
+        if (image != null && !image.isEmpty()) {
+
+            String uploadDir = "uploads/";
+
+            File dir = new File(uploadDir);
+
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String fileName =
+                    System.currentTimeMillis()
+                            + "_"
+                            + image.getOriginalFilename();
+
+            Path filePath =
+                    Paths.get(uploadDir, fileName);
+
+            Files.write(filePath, image.getBytes());
+
+            product.setImageUrl(fileName);
+        }
+
+        return repo.save(product);
     }
 }
