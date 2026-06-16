@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @Service
@@ -253,6 +254,8 @@ public class ProductService {
         // image update optional
         if (image != null && !image.isEmpty()) {
 
+            System.out.println("IMAGE RECEIVED");
+
             String uploadDir = "uploads/";
 
             File dir = new File(uploadDir);
@@ -266,12 +269,23 @@ public class ProductService {
                             + "_"
                             + image.getOriginalFilename();
 
-            Path filePath =
-                    Paths.get(uploadDir, fileName);
+            System.out.println("FILE NAME: " + fileName);
 
-            Files.write(filePath, image.getBytes());
+            Path filePath = Paths.get(uploadDir, fileName);
+
+            Files.copy(
+                    image.getInputStream(),
+                    filePath,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
 
             product.setImageUrl(fileName);
+
+            System.out.println("IMAGE URL SAVED");
+        }
+        else {
+
+            System.out.println("IMAGE IS NULL");
         }
 
         return repo.save(product);

@@ -154,6 +154,7 @@ public class ProductController {
 //        return service.updateProduct(id,dto);
 //    }
 
+    //@PutMapping("/{id}")
     @PutMapping("/{id}")
     public Product updateProduct(
 

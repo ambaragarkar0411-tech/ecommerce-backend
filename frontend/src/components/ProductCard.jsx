@@ -14,8 +14,13 @@ const navigate=useNavigate();
 return(
 <div  className="product-card" key={product.id}>
     <img
-    src={`http://localhost:8080/uploads/${product.imageUrl}`}
-    alt={product.name}
+  src={
+    product.imageUrl
+      ? `http://localhost:8080/uploads/${product.imageUrl}`
+      : "https://via.placeholder.com/200"
+  }
+  alt={product.name}
+
     className="product-image"/>
 
         <h4>{product.name}</h4>

@@ -158,6 +158,7 @@ function ProductListing({apiUrl,searchKeyword,
         setStock(product.stock);
         setCategory(product.category);
         setEditId(product.id);
+        setImage(null);
 
     };
 
@@ -246,9 +247,9 @@ const handleUpdateProduct = () => {
     if (image) {
         formData.append("image", image);
     }
-
-    fetch(`http://localhost:8080/api/products/${editId}`, {
-
+console.log(image);
+    fetch(`http://localhost:8080/api/products/${editId}`, 
+        {
     method: "PUT",
 
     headers: {
@@ -256,12 +257,15 @@ const handleUpdateProduct = () => {
     },
 
     body: formData,
+  
 })
 
 .then(res => {
 
     if (!res.ok) {
+        console.log(token);
         throw new Error("Update failed");
+        
     }
 
     alert("Product Updated");
@@ -275,6 +279,7 @@ const handleUpdateProduct = () => {
     setImage(null);
 
     fetchProducts();
+    
 })
 
 .catch(err => console.log(err));
