@@ -62,37 +62,85 @@ public class SecurityConfig {
 
         http
                 .cors(cors -> {})
-                .csrf(csrf -> csrf.disable())
+               .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
 
-                                //for swagger
-                                .requestMatchers(
-                                        "/auth/**",
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html"
-                                ).permitAll()
-                        //.requestMatchers("/auth/**").permitAll() // ✅ same as before
+                        // PUBLIC APIs
+                        .requestMatchers(
+                                "/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/uploads/**"
+                        ).permitAll()
 
+                        // PRODUCT APIs
+                        .requestMatchers(HttpMethod.GET, "/api/products/**")
+                        .hasAnyRole("USER", "ADMIN")
 
-                        //role based rules
-//                        If something fails
-//                        🔴 403 Forbidden
-//                        👉 Role issue
-//                        🔴 401 Unauthorized
-//                        👉 Token missing/invalid
-                        .requestMatchers(HttpMethod.GET,"/api/products/**")
-                        .hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.POST,"/api/products/**")
+                        .requestMatchers(HttpMethod.POST, "/api/products/**")
                         .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT,"/api/products/**")
-                                .hasRole("ADMIN")
-                                //.requestMatchers(HttpMethod.DELETE,"/api/products/**").permitAll()
-                       .requestMatchers(HttpMethod.DELETE,"/api/products/**")
-                       .hasRole("ADMIN")
-                                .requestMatchers("/cart/**").authenticated()
-                                .requestMatchers("/wishlist/**").permitAll()
-                        .anyRequest().authenticated()            // ✅ same as before
+
+//                                .requestMatchers(HttpMethod.POST,
+//                                        "/api/products/update/**")
+//                                .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**")
+                                .permitAll()
+//                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/cart/**").authenticated()
+
+                        .requestMatchers("/wishlist/**").permitAll()
+
+                        .anyRequest().authenticated()
+
+//                .authorizeHttpRequests(auth -> auth
+//
+//                                //for swagger
+//                                .requestMatchers(
+//                                        "/auth/**",
+//                                        "/v3/api-docs/**",
+//                                        "/swagger-ui/**",
+//                                        "/swagger-ui.html"
+//                                ).permitAll()
+//                        //.requestMatchers("/auth/**").permitAll() // ✅ same as before
+//
+////                                .requestMatchers(
+////                                        "/api/products/category/**"
+////                                ).permitAll()
+//
+//                        //role based rules
+////                        If something fails
+////                        🔴 403 Forbidden
+////                        👉 Role issue
+////                        🔴 401 Unauthorized
+////                        👉 Token missing/invalid
+//                        .requestMatchers(HttpMethod.GET,"/api/products/**")
+//                        .hasAnyRole("USER","ADMIN")
+//                        .requestMatchers(HttpMethod.POST,"/api/products/**")
+//
+//
+//                        .hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.PUT,"/api/products/**")
+//                                .hasRole("ADMIN")
+//                                //.requestMatchers(HttpMethod.DELETE,"/api/products/**").permitAll()
+//                       .requestMatchers(HttpMethod.DELETE,"/api/products/**")
+//
+//                       .hasRole("ADMIN")
+//                                .requestMatchers("/cart/**").authenticated()
+//                                .requestMatchers("/wishlist/**").permitAll()
+//
+//                                .requestMatchers(
+//                                        "/auth/**",
+//                                        "/api/products/**",
+//                                        "/uploads/**"
+//                                ).permitAll()
+//
+//
+//                        .anyRequest().authenticated()            // ✅ same as before
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

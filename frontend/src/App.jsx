@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Wishlist from "./Wishlist";
-import Product from "./Product";
-import ProtectedRoute from "./ProtectedRoute";
-import Cart from "./Cart";
-import Profile from "./Profile";
-import Checkout from "./Checkout";
-import OrderStatus from "./OrderStatus";
+ import Wishlist from "./components/Wishlist";
+// import Product from "./temp/Product";
+ import ProtectedRoute from "./ProtectedRoute";
+ import Cart from "./components/Cart";
+import Profile from "./components/Profile";
+ import Checkout from "./components/Checkout";
+import OrderStatus from "./components/OrderStatus"
+// import CategoryPage from "./temp/CategoryPage";
+
+import Product from "./pages/Product";
+import CategoryPage from "./pages/CategoryPage";
+
 function App() {
 
   const navigate = useNavigate();
@@ -84,6 +89,16 @@ function App() {
         }
       />
 
+      {/* Products
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute>
+            <Product />
+          </ProtectedRoute>
+        }
+      /> */}
+
       {/* Products */}
       <Route
         path="/products"
@@ -94,18 +109,18 @@ function App() {
         }
       />
 
-      {/* Cart */}
+      Cart
       <Route
         path="/cart"
         element={
           <ProtectedRoute>
             <Cart />
           </ProtectedRoute>
-        }
+        } 
         
-      />
+       />
 
-{/* Profile */}
+Profile
 <Route
    path="/profile"
    element={
@@ -114,17 +129,17 @@ function App() {
       </ProtectedRoute>
    }
 />
-{/* Checkout */}
-<Route
+{/* Checkout * */}
+ <Route
         path="/checkout"
         element={
             <ProtectedRoute>
                 <Checkout />
             </ProtectedRoute>
         }
-    />
+    /> 
 
-{/* Order Status */}
+{/* * Order Status */}
 
 <Route
 path="/order-status"
@@ -140,6 +155,14 @@ element={
             <Wishlist />
         </ProtectedRoute>
     }
+/>
+
+<Route
+    path="/category/:category"
+    element={
+    <ProtectedRoute>
+      <CategoryPage />
+    </ProtectedRoute>}
 />
 
     </Routes>

@@ -1,6 +1,8 @@
 import { useEffect,useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import ProductListing from "./ProductListing";
+
 function Wishlist(){
 const[wishlistItems,setWishlistItems]=useState([]);
 const navigate=useNavigate();
@@ -60,7 +62,7 @@ const removeWishlist = (wishlistId) => {
                 Home Page
             </button>
             <h2>My Wishlist ❤️</h2>
-            {
+               {
                 wishlistItems.length===0?(
                     <p>No wishlists items</p>
                 ):(
@@ -90,7 +92,13 @@ const removeWishlist = (wishlistId) => {
 
                         </div>)
                 ))
-            } </div> </></div>
+            }   
+            
+
+            </div>
+        </>
+             </div> 
     );
-};
+
+}
 export default Wishlist;
